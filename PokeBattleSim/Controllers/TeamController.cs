@@ -9,13 +9,13 @@ namespace PokeBattleSim.Controllers
     [ApiController]
     public class TeamController : ControllerBase
     {
-        private readonly HttpClient _client;
+        private readonly PokeAPIService _pokeAPIService;
 
-        public TeamController(IHttpClientFactory clientFactory)
+        public TeamController(PokeAPIService pokeAPIService)
         {
-            ArgumentNullException.ThrowIfNull(clientFactory, nameof(clientFactory));
+            ArgumentNullException.ThrowIfNull(pokeAPIService, nameof(pokeAPIService));
 
-            _client = clientFactory.CreateClient("PokeAPI");
+            _pokeAPIService = pokeAPIService;
         }
 
         /// <summary>
@@ -133,20 +133,10 @@ namespace PokeBattleSim.Controllers
 
             foreach (string member in members)
             {
-                team.Members.Add(await _getPokemonID(member));
+                team.Members.Add(await _pokeAPIService.GetPokemonID(member));
             }
 
             return NoContent();
-        }
-
-        private record Pokemon(uint id, string name);
-
-        private async Task<uint> _getPokemonID(string name)
-        {
-            var result = await _client.GetAsync("pokemon/" + name.ToLower());
-            Pokemon? content = (Pokemon?) await result.Content.ReadFromJsonAsync(typeof(Pokemon));
-
-            return content!.id;
         }
     }
 }

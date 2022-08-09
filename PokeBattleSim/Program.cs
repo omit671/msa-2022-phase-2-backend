@@ -13,6 +13,9 @@ builder.Services.AddSwaggerGen(options =>
         Title = "PokeBattleSimAPI",
         Description = "An API for creating a Pokemon team and fighting other teams."
     });
+
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();

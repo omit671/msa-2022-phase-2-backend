@@ -31,17 +31,20 @@ namespace PokeBattleSim.Controllers
         /// <summary>
         /// Create a new team, optionally from a list of pokemon.
         /// </summary>
-        /// <param name="pokemon">A list of initial team members. Optional.</param>
+        /// <param name="pokemon">A list of initial team members. May be empty.</param>
         /// <response code="201">The new team.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Team), 201)]
-        public IActionResult CreateTeam([FromBody] IList<string>? pokemon)
+        public async Task<IActionResult> CreateTeam([FromBody] IList<string>? pokemon)
         {
             Team team = new();
 
             if (pokemon != null)
             {
-                // TODO populate team members
+                foreach (string member in pokemon)
+                {
+                    team.Members.Add(await _pokeAPIService.GetPokemonID(member));
+                }
             }
 
             return Created($"api/v1/teams/{team.Id}", team);

@@ -17,6 +17,10 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+builder.Services.AddHttpClient("PokeAPI", httpClient =>
+{
+    httpClient.BaseAddress = new Uri("https://pokeapi.co/api/v2/");
+});
 
 var app = builder.Build();
 

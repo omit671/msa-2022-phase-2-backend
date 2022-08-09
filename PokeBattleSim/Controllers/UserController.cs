@@ -53,9 +53,7 @@ namespace PokeBattleSim.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetUser(uint id)
         {
-            User? user;
-
-            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user);
 
             if (userExists == false)
             {
@@ -97,16 +95,14 @@ namespace PokeBattleSim.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetUserName(uint id)
         {
-            User? user;
-
-            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user);
 
             if (userExists == false)
             {
                 return NotFound();
             }
 
-            return Ok(user.Name);
+            return Ok(user!.Name);
         }
 
         /// <summary>
@@ -120,16 +116,66 @@ namespace PokeBattleSim.Controllers
         [ProducesResponseType(404)]
         public IActionResult SetUserName(uint id, string name)
         {
-            User? user;
-
-            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user);
 
             if (userExists == false)
             {
                 return NotFound();
             }
 
-            user.Name = name;
+            user!.Name = name;
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Retrieve a user's team.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <response code="200">The user's team's ID.</response>
+        /// <response code="404">If the user specified does not exist.</response>
+        [HttpGet("{id}/team")]
+        [ProducesResponseType(typeof(uint), 200)]
+        [ProducesResponseType(404)]
+        public IActionResult GetUserTeam(uint id)
+        {
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            return Ok(user!.Team.Id);
+        }
+
+        /// <summary>
+        /// Swap out a user's team.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <param name="teamID">The team ID.</param>
+        /// <response code="204">If the team change was processed successfully.</response>
+        /// <response code="404">If the user or team specified does not exist.</response>
+        [HttpPatch("{id}/team")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult SetUserTeam(uint id, uint teamID)
+        {
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            bool teamExists = Team.Teams.TryGetValue(teamID, out Team? team);
+
+            if (teamExists == false)
+            {
+                return NotFound();
+            }
+
+            user!.Team = team!;
 
             return NoContent();
         }

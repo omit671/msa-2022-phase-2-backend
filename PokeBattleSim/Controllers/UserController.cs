@@ -4,12 +4,13 @@
 
 namespace PokeBattleSim.Controllers
 {
+    /// <summary>
+    /// Create, manage, and retrieve users and their data.
+    /// </summary>
     [Route("api/v1/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private static readonly IDictionary<uint, string> s_users = new Dictionary<uint, string>();
-
         /// <summary>
         /// Retrieve all currently registered users.
         /// </summary>
@@ -17,11 +18,36 @@ namespace PokeBattleSim.Controllers
         [HttpGet]
         public IEnumerable<uint> GetAllUsers()
         {
-            return s_users.Keys;
+            return PokeBattleSim.User.Users.Keys;
         }
 
         /// <summary>
         /// Retrieve the name of a user.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <response code="200">The user's name.</response>
+        /// <response code="404">If the user specified does not exist.</response>
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(404)]
+        public IActionResult GetUser(uint id)
+        {
+            User? user;
+
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user);
+            }
+        }
+
+        /// <summary>
+        /// Retrieve a user.
         /// </summary>
         /// <param name="id">The user ID.</param>
         /// <response code="200">The user's name.</response>
@@ -31,9 +57,9 @@ namespace PokeBattleSim.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetUserName(uint id)
         {
-            string? name;
+            User? user;
 
-            bool userExists = s_users.TryGetValue(id, out name);
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
 
             if (userExists == false)
             {
@@ -41,7 +67,7 @@ namespace PokeBattleSim.Controllers
             }
             else
             {
-                return Ok(name);
+                return Ok(user.Name);
             }
         }
 
@@ -49,23 +75,21 @@ namespace PokeBattleSim.Controllers
         /// Create a new user.
         /// </summary>
         /// <param name="name">The user's name.</param>
-        /// <response code="201">The new user's ID.</response>
+        /// <response code="201">The new user.</response>
         /// <response code="403">If a user with the specified name already exists.</response>
         [HttpPost]
-        [ProducesResponseType(typeof(uint), 201)]
+        [ProducesResponseType(typeof(User), 201)]
         [ProducesResponseType(403)]
         public IActionResult CreateUser([FromBody] string name)
         {
-            if (s_users.Values.Contains(name))
+            if (PokeBattleSim.User.Users.Values.Any(user => user.Name == name))
             {
                 return Forbid();
             }
 
-            uint id = (uint)s_users.Count;
+            User user = new(name);
 
-            s_users.Add(id, name);
-
-            return Created($"api/v1/users/{id}", id);
+            return Created($"api/v1/users/{user.Id}", user);
         }
     }
 }

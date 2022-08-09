@@ -11,6 +11,9 @@ namespace PokeBattleSim.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        // High-tech battle mechanics
+        private static readonly Random _s_rng = new();
+
         /// <summary>
         /// Retrieve all currently registered users.
         /// </summary>
@@ -178,6 +181,48 @@ namespace PokeBattleSim.Controllers
             user!.Team = team!;
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Cause a player to battle an opponent.
+        /// </summary>
+        /// <param name="id">The ID of the player to battle.</param>
+        /// <param name="otherUser">The ID of their opponent.</param>
+        /// <response code="200">The ID of the winner of the battle.</response>
+        /// <response code="400">If either player has an empty team.</response>
+        [HttpPost("{id}/battle/{otherUser}")]
+        [ProducesResponseType(typeof(uint), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult BattleUser(uint id, uint otherUser)
+        {
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user1);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            userExists = PokeBattleSim.User.Users.TryGetValue(id, out User? user2);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            if (user1!.Team.Members.Count == 0)
+            {
+                return BadRequest("User 1's team is empty");
+            }
+
+            if (user2!.Team.Members.Count == 0)
+            {
+                return BadRequest("User 2's team is empty");
+            }
+
+            // As you can see we only employ the most sophisticated game mechanics
+            User victor = _s_rng.Next(0, 2) == 0 ? user1 : user2;
+
+            return Ok(victor.Id);
         }
     }
 }

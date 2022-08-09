@@ -11,12 +11,12 @@
             _httpClient.BaseAddress = new Uri("https://pokeapi.co/api/v2/");
         }
 
-        public async Task<uint> GetPokemonID(string name)
+        public async Task<Pokemon> GetPokemon(string name)
         {
             var result = await _httpClient.GetAsync("pokemon/" + name.ToLower());
             Pokemon? content = (Pokemon?)await result.Content.ReadFromJsonAsync(typeof(Pokemon));
 
-            return content!.Id;
+            return content!;
         }
     }
 }

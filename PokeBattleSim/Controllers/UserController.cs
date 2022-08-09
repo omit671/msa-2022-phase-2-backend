@@ -14,11 +14,11 @@ namespace PokeBattleSim.Controllers
         /// <summary>
         /// Retrieve all currently registered users.
         /// </summary>
-        /// <response code="200">The user IDs of all registered users.</response>
+        /// <response code="200">A list of all registered users.</response>
         [HttpGet]
-        public IEnumerable<uint> GetAllUsers()
+        public IEnumerable<User> GetAllUsers()
         {
-            return PokeBattleSim.User.Users.Keys;
+            return PokeBattleSim.User.Users.Values;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace PokeBattleSim.Controllers
         /// <response code="200">If the user was deleted successfully.</response>
         /// <response code="404">If the user specified does not exist.</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(User), 204)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult DeleteUser(uint id)
         {

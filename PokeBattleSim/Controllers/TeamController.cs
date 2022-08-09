@@ -21,11 +21,11 @@ namespace PokeBattleSim.Controllers
         /// <summary>
         /// Retrieve all currently existent Pokemon teams.
         /// </summary>
-        /// <response code="200">The team IDs of all registered teams.</response>
+        /// <response code="200">All registered teams.</response>
         [HttpGet]
-        public IEnumerable<uint> GetAllTeams()
+        public IEnumerable<Team> GetAllTeams()
         {
-            return Team.Teams.Keys;
+            return Team.Teams.Values;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace PokeBattleSim.Controllers
             {
                 foreach (string member in pokemon)
                 {
-                    team.Members.Add(await _pokeAPIService.GetPokemonID(member));
+                    team.Members.Add(await _pokeAPIService.GetPokemon(member));
                 }
             }
 
@@ -96,10 +96,10 @@ namespace PokeBattleSim.Controllers
         /// Get the team members of a Pokemon team.
         /// </summary>
         /// <param name="id">The team ID.</param>
-        /// <response code="200">A list of Pokemon IDs.</response>
+        /// <response code="200">A list of Pokemon.</response>
         /// <response code="404">If the team specified does not exist.</response>
         [HttpGet("{id}/members")]
-        [ProducesResponseType(typeof(IEnumerable<uint>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<Pokemon>), 200)]
         [ProducesResponseType(404)]
         public IActionResult GetMembers(uint id)
         {
@@ -136,7 +136,7 @@ namespace PokeBattleSim.Controllers
 
             foreach (string member in members)
             {
-                team.Members.Add(await _pokeAPIService.GetPokemonID(member));
+                team.Members.Add(await _pokeAPIService.GetPokemon(member));
             }
 
             return NoContent();

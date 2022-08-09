@@ -22,56 +22,6 @@ namespace PokeBattleSim.Controllers
         }
 
         /// <summary>
-        /// Retrieve the name of a user.
-        /// </summary>
-        /// <param name="id">The user ID.</param>
-        /// <response code="200">The user's name.</response>
-        /// <response code="404">If the user specified does not exist.</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(User), 200)]
-        [ProducesResponseType(404)]
-        public IActionResult GetUser(uint id)
-        {
-            User? user;
-
-            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
-
-            if (userExists == false)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user);
-            }
-        }
-
-        /// <summary>
-        /// Retrieve a user.
-        /// </summary>
-        /// <param name="id">The user ID.</param>
-        /// <response code="200">The user's name.</response>
-        /// <response code="404">If the user specified does not exist.</response>
-        [HttpGet("{id}/name")]
-        [ProducesResponseType(typeof(string), 200)]
-        [ProducesResponseType(404)]
-        public IActionResult GetUserName(uint id)
-        {
-            User? user;
-
-            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
-
-            if (userExists == false)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.Name);
-            }
-        }
-
-        /// <summary>
         /// Create a new user.
         /// </summary>
         /// <param name="name">The user's name.</param>
@@ -90,6 +40,98 @@ namespace PokeBattleSim.Controllers
             User user = new(name);
 
             return Created($"api/v1/users/{user.Id}", user);
+        }
+
+        /// <summary>
+        /// Retrieve a user.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <response code="200">The user's data.</response>
+        /// <response code="404">If the user specified does not exist.</response>
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(404)]
+        public IActionResult GetUser(uint id)
+        {
+            User? user;
+
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Delete a user.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <response code="200">If the user was deleted successfully.</response>
+        /// <response code="404">If the user specified does not exist.</response>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(User), 204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteUser(uint id)
+        {
+            bool userExisted = PokeBattleSim.User.Users.Remove(id);
+
+            if (userExisted == false)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Retrieve a user's name.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <response code="200">The user's name.</response>
+        /// <response code="404">If the user specified does not exist.</response>
+        [HttpGet("{id}/name")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(404)]
+        public IActionResult GetUserName(uint id)
+        {
+            User? user;
+
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            return Ok(user.Name);
+        }
+
+        /// <summary>
+        /// Update a user's name.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <response code="204">If the name change was processed successfully.</response>
+        /// <response code="404">If the user specified does not exist.</response>
+        [HttpPatch("{id}/name")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult SetUserName(uint id, string name)
+        {
+            User? user;
+
+            bool userExists = PokeBattleSim.User.Users.TryGetValue(id, out user);
+
+            if (userExists == false)
+            {
+                return NotFound();
+            }
+
+            user.Name = name;
+
+            return NoContent();
         }
     }
 }

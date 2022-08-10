@@ -9,9 +9,9 @@ namespace PokeBattleSim.Controllers
     [ApiController]
     public class TeamController : ControllerBase
     {
-        private readonly PokeAPIService _pokeAPIService;
+        private readonly IPokeAPIService _pokeAPIService;
 
-        public TeamController(PokeAPIService pokeAPIService)
+        public TeamController(IPokeAPIService pokeAPIService)
         {
             ArgumentNullException.ThrowIfNull(pokeAPIService, nameof(pokeAPIService));
 
@@ -47,7 +47,7 @@ namespace PokeBattleSim.Controllers
                 }
             }
 
-            return Created($"api/v1/teams/{team.Id}", team);
+            return Created($"/api/v1/teams/{team.Id}", team);
         }
 
         /// <summary>

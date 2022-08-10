@@ -42,7 +42,7 @@ namespace PokeBattleSim.Controllers
 
             User user = new(name);
 
-            return Created($"api/v1/users/{user.Id}", user);
+            return Created($"/api/v1/users/{user.Id}", user);
         }
 
         /// <summary>

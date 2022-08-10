@@ -1,6 +1,6 @@
 ﻿namespace PokeBattleSim
 {
-    public class PokeAPIService
+    public class PokeAPIService : IPokeAPIService
     {
         private readonly HttpClient _httpClient;
 

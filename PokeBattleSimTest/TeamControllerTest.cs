@@ -18,7 +18,8 @@ namespace PokeBattleSimTest
          * requests. The use of NSubstitute allows us to easily create a mock object,
          * so we can test only the code of the TeamController and not PokeAPIService,
          * HttpClient, etc. This means we can perform unit tests on just the TeamController,
-         * and aren't forced to use integration tests.
+         * and aren't forced to use integration tests. It also lets us check when
+         * the TeamController is and isn't calling the API (with spy methods).
          */
         private IPokeAPIService createPokeAPIService()
         {

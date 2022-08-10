@@ -13,6 +13,13 @@ namespace PokeBattleSimTest
             Team.Teams.Clear();
         }
 
+        /*
+         * Here we create a substitute PokeAPIService that doesn't make any network
+         * requests. The use of NSubstitute allows us to easily create a mock object,
+         * so we can test only the code of the TeamController and not PokeAPIService,
+         * HttpClient, etc. This means we can perform unit tests on just the TeamController,
+         * and aren't forced to use integration tests.
+         */
         private IPokeAPIService createPokeAPIService()
         {
             var substitute = Substitute.For<IPokeAPIService>();

@@ -10,7 +10,17 @@ namespace PokeBattleSim.Controllers
     public class TeamController : ControllerBase
     {
         private readonly IPokeAPIService _pokeAPIService;
-
+        
+        /*
+         * Here we use dependency injection to have the Swashbuckle middleware
+         * pass in a service for querying our 3rd party API. It simplifies our
+         * code because we don't have to worry about making HTTP requests,
+         * constructing the URL to query, or deserialising the response. It also
+         * lets us swap out the implementation easily, if we need to. This
+         * increases the testability of the code, because it lets us easily pass
+         * in a mock service. With a mock, we can check if our code is calling
+         * the right API methods at the right times.
+         */
         public TeamController(IPokeAPIService pokeAPIService)
         {
             ArgumentNullException.ThrowIfNull(pokeAPIService, nameof(pokeAPIService));

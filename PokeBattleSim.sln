@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{82AC41D8-41B0-418D-9E16-01460265D9F3}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeBattleSimTest", "PokeBattleSimTest\PokeBattleSimTest.csproj", "{C82BED07-79B6-417D-A144-3CF88DF96E89}"
